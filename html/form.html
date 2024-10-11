@@ -83,31 +83,31 @@
 <body>
     <form action="/" method="post" id="userForm">
         <label for="firstName">First Name</label>
-        <input type="text" id="firstName" pattern="[A-Za-z\s]+" placeholder="" required>
+        <input type="text" id="firstName" pattern="[A-Za-z\s]+" title="First Name should contain only letters" placeholder="" required>
 
         <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" pattern="[A-Za-z\s]+" placeholder="" required>
+        <input type="text" id="lastName" pattern="[A-Za-z\s]+" title="Last Name should contain only letters" placeholder="" required>
 
         <label for="mobileNumber">Mobile Number</label>
-        <input type="tel" id="mobileNumber" pattern="[0-9]{10}" placeholder="" required>
+        <input type="tel" id="mobileNumber" pattern="[0-9]{10}" title="Mobile number should be exactly 10 digits (numbers only)" placeholder="" required>
 
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="" required>
+        <input type="email" id="email" placeholder="" title="Enter a valid email address (e.g., example@domain.com)" required>
 
         <fieldset>
             <legend id="address" style="font-size: large; font-weight: bold;">Address : </legend>
 
             <label for="street">Street</label>
-            <input type="text" id="street" pattern="[A-Za-z\s]+" name="address[street]" required>
+            <input type="text" id="street" pattern="[A-Za-z\s]+" title="Street should contain only letters, numbers, and spaces" name="address[street]" required>
 
             <label for="city">City</label>
-            <input type="text" id="city" pattern="[A-Za-z\s]+" name="address[city]" required>
+            <input type="text" id="city" pattern="[A-Za-z\s]+" title="city should contain only letters, numbers, and spaces" name="address[city]" required>
 
             <label for="state">State</label>
-            <input type="text" id="state" pattern="[A-Za-z\s]+" name="address[state]" required>
+            <input type="text" id="state" pattern="[A-Za-z\s]+" title="State should contain only letters, numbers, and spaces" name="address[state]" required>
 
             <label for="country">Country</label>
-            <input type="text" id="country" pattern="[A-Za-z\s]+" name="address[country]" required>
+            <input type="text" id="country" pattern="[A-Za-z\s]+" title="country should contain only letters, numbers, and spaces" name="address[country]" required>
         </fieldset>
 
         <label for="loginId">Login ID</label>
