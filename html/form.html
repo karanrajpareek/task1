@@ -83,10 +83,10 @@
 <body>
     <form action="/" method="post" id="userForm">
         <label for="firstName">First Name</label>
-        <input type="text" id="firstName" placeholder="" required>
+        <input type="text" id="firstName" pattern="[A-Za-z\s]+" placeholder="" required>
 
         <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" placeholder="" required>
+        <input type="text" id="lastName" pattern="[A-Za-z\s]+" placeholder="" required>
 
         <label for="mobileNumber">Mobile Number</label>
         <input type="tel" id="mobileNumber" pattern="[0-9]{10}" placeholder="" required>
@@ -98,23 +98,23 @@
             <legend id="address" style="font-size: large; font-weight: bold;">Address : </legend>
 
             <label for="street">Street</label>
-            <input type="text" id="street" name="address[street]" required>
+            <input type="text" id="street" pattern="[A-Za-z\s]+" name="address[street]" required>
 
             <label for="city">City</label>
-            <input type="text" id="city" name="address[city]" required>
+            <input type="text" id="city" pattern="[A-Za-z\s]+" name="address[city]" required>
 
             <label for="state">State</label>
-            <input type="text" id="state" name="address[state]" required>
+            <input type="text" id="state" pattern="[A-Za-z\s]+" name="address[state]" required>
 
             <label for="country">Country</label>
-            <input type="text" id="country" name="address[country]" required>
+            <input type="text" id="country" pattern="[A-Za-z\s]+" name="address[country]" required>
         </fieldset>
 
         <label for="loginId">Login ID</label>
-        <input type="text" id="loginId" pattern="[A-Za-z0-9]{8}" placeholder="" required>
+        <input type="text" id="loginId" title="Login ID must be 8 characters long and contain only letters and numbers" pattern="[A-Za-z0-9]{8}" placeholder="" required>
 
         <label for="password">Password</label>
-        <input type="password" id="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}" placeholder="" required>
+        <input type="password" title="Password must be at least 6 characters long, contain one uppercase, one lowercase, and one special character" id="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}" placeholder="" required>
 
         <input type="submit" onclick="saveForm()" value="Save">
     </form><br>
