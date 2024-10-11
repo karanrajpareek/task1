@@ -1,0 +1,33 @@
+[
+  {},
+  {
+    "firstName": "karan",
+    "lastName": "raj",
+    "mobileNumber": "1234567890",
+    "email": "dfd@gmail.com",
+    "address": {
+      "street": "asd",
+      "city": "dwefrr",
+      "state": "ddew",
+      "country": "waefdsr"
+    },
+    "loginID": "12345678",
+    "password": "K123@as"
+  },
+  {
+    "firstName": "karan",
+    "lastName": "raj",
+    "mobileNumber": "1234567890",
+    "email": "dfd@gmail.com",
+    "address": {
+      "street": "asd",
+      "city": "dwefrr",
+      "state": "ddew",
+      "country": "waefdsr"
+    },
+    "loginID": "12345678",
+    "password": "Kar12@1",
+    "creationTime": "2024-10-10T06:40:01.605Z",
+    "lastUpdatedOn": "2024-10-10T06:40:01.605Z"
+  }
+]
