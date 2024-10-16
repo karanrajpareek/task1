@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #userList {
+            margin-top: 20px;
+        }
+        .user-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer; /* Change cursor to indicate clickable */
+        }
+        .user-item:hover {
+            background-color: #f0f0f0; /* Add hover effect */
+        }
+        /* Modal styles */
+        #userModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>User List</h1>
+    <div id="userList">Loading users...</div> <!-- Container for displaying users -->
+
+    <!-- Modal for displaying user information -->
+    <div id="userModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>User Details</h2>
+            <div id="userDetails"></div> <!-- Container for user details -->
+        </div>
+    </div>
+
+    <script>
+        let usersData = []; // Store users data globally
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/fetchUsers'); // Fetch users from the server
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                usersData = await response.json(); // Parse JSON data
+                console.log('Fetched users:', usersData); // Log the fetched users
+
+                // Call a function to render users
+                renderUsers(usersData);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                document.getElementById('userList').innerText = 'Failed to load users.';
+            }
+        }
+
+        function renderUsers(users) {
+            const userList = document.getElementById('userList'); // Get the user list container
+            userList.innerHTML = ''; // Clear previous users
+
+            // Check if there are users to display
+            if (users.length === 0) {
+                userList.innerText = 'No users found.'; // Display message if no users
+                return;
+            }
+
+            // Render each user in the list
+            users.forEach(user => {
+                const userItem = document.createElement('div'); // Create a new element for each user
+                userItem.classList.add('user-item'); // Add a class for styling
+                userItem.innerHTML = `Name: ${user.firstName}, Email: <span class="email">${user.email}</span>, Socket ID: <span class="socket-id">${user.socketId}</span>`;
+                userItem.addEventListener('click', () => showUserDetails(user)); // Add click event to show details
+                userList.appendChild(userItem); // Add the user element to the list
+            });
+        }
+
+        function showUserDetails(user) {
+            const userDetails = document.getElementById('userDetails'); // Get the user details container
+            userDetails.innerHTML = ''; // Clear previous details
+
+            
+               // Other user details...
+    userDetails.innerHTML += `<p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>`;
+    userDetails.innerHTML += `<p><strong>Email:</strong> ${user.email}</p>`;
+    userDetails.innerHTML += `<p><strong>Mobile number:</strong> ${user.mobileNumber}</p>`;
+    userDetails.innerHTML += `<p><strong>login id:</strong> ${user.loginID}</p>`;
+    userDetails.innerHTML += `<p><strong>creation Time:</strong> ${user.creationTime}</p>`;
+    userDetails.innerHTML += `<p><strong>updated Time:</strong> ${user.updatedTime}</p>`;
+
+
+    
+    // Updated address display logic
+    if (user.address && typeof user.address === 'object') {
+        userDetails.innerHTML += `<p><strong>Address:</strong> ${user.address.street || 'N/A'}, ${user.address.city || 'N/A'}, ${user.address.state || 'N/A'},${user.address.country || 'N/A'}</p>`;
+    } else {
+        userDetails.innerHTML += `<p><strong>Address:</strong> ${user.address ? user.address : 'Address not provided'}</p>`;
+    }
+
+            document.getElementById('userModal').style.display = 'block'; // Show the modal
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none'; // Hide the modal
+        }
+
+        // Call the fetchUsers function when the page loads
+        window.onload = fetchUsers;
+    </script>
+</body>
+</html>

@@ -1,68 +1,66 @@
-const express = require('express');
-const router = express.Router();
-const path = require('path');
-const bodyParser = require('body-parser');
-const app = express();
-const connectDB = require('../db');
+module.exports = (io, db) => {
+    const express = require('express');
+    const router = express.Router();
+    const path = require('path');
 
-app.use(bodyParser.json());
+    // Serve the form.html file
+    router.get("/", (req, res) => {
+        res.sendFile(path.join(__dirname, '../html/form.html'));
+    });
 
+    // Serve the userlist.html file
+    router.get("/html/userlist", (req, res) => {
+        res.sendFile(path.join(__dirname, '../html/userlist.html'));
+    });
 
-router.route("/").get(function(req,res){
-    res.sendFile(path.join(__dirname,'../html/form.html'));
-});
+    // Handle form submission and data insertion
+    router.post("/", async (req, res) => {
+        const formData = {
+            ...req.body,
+            creationTime: new Date().toISOString(),
+            lastUpdatedOn: new Date().toISOString(),
+        };
 
-router.route('/').post(async function(req,res){
-    const formData = req.body; 
-
-    console.log("Received data: ", formData);
-
-    const currentTime = new Date().toISOString(); 
-    formData.creationTime = currentTime;          
-    formData.lastUpdatedOn = currentTime;    
-
-    let client; 
-    try {
-        const { client: mongoClient, db } = await connectDB(); 
-        client = mongoClient; 
-        
-        const collection = db.collection('yourCollectionName'); 
-
-        const result = await collection.insertOne(formData);
-
-        console.log(`Data inserted with ID: ${result.insertedId}`);
-        res.status(200).json({ message: 'Data saved successfully to MongoDB!' });
-    } catch (err) {
-        console.error('Error saving data to MongoDB:', err);
-        res.status(500).json({ message: 'Failed to save data to MongoDB.' });
-    } finally {
-        if (client) {
-            await client.close();
-            console.log('MongoDB connection closed.');
+        try {
+            const result = await db.collection('yourCollectionName').insertOne(formData);
+            io.emit('userAdded', { id: result.insertedId, ...formData });
+            res.status(200).json({ message: 'Data saved successfully to MongoDB!' });
+        } catch (err) {
+            console.error('Error saving data to MongoDB:', err);
+            res.status(500).json({ message: 'Failed to save data to MongoDB.' });
         }
-    }
-});
+    });
 
-router.route('/fetch').get(async (req, res) => {
-    let client;
-    try {
-        const connection = await connectDB(); 
-        const db = connection.db; 
-        client = connection.client; 
-
-        const collection = db.collection('yourCollectionName'); 
-        const documents = await collection.find({}).toArray(); 
-
-        res.status(200).json(documents); 
-    } catch (error) {
-        console.error('Error fetching data from MongoDB:', error);
-        res.status(500).json({ message: 'Failed to fetch data from MongoDB.' });
-    } finally {
-        if (client) {
-            await client.close();
-            console.log('MongoDB connection closed.');
+    // API to fetch all documents from the collection
+    router.get('/fetch', async (req, res) => {
+        try {
+            const documents = await db.collection('yourCollectionName').find({}).toArray();
+            res.status(200).json(documents);
+        } catch (error) {
+            console.error('Error fetching data from MongoDB:', error);
+            res.status(500).json({ message: 'Failed to fetch data from MongoDB.' });
         }
-    }
-});
+    });
 
-module.exports = router;
+    // Define the fetchUsers function
+    const fetchUsers = async () => {
+        try {
+            const users = await db.collection('yourCollectionName').find({}).toArray();
+            return users;
+        } catch (error) {
+            throw new Error('Failed to fetch users from the database');
+        }
+    };
+
+    router.get('/fetchUsers', async (req, res) => {
+        try {
+            const users = await fetchUsers(); // Now this will work correctly
+            res.json(users);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    });
+
+    return router;
+};

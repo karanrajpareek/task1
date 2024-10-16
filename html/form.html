@@ -116,19 +116,31 @@
         <label for="password">Password</label>
         <input type="password" title="Password must be at least 6 characters long, contain one uppercase, one lowercase, and one special character" id="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{6,}" placeholder="" required>
 
+         <!-- Hidden input field to store Socket ID -->
+        <input type="hidden" id="socketId" name="socketId">
+
         <input type="submit" onclick="saveForm()" value="Save">
     </form><br>
     <div class="fetch-users-section">
         <button id="fetchUsers">Fetch Users</button>
         <ul id="userList"></ul> <!-- Container to display fetched users as a list -->
     </div>
-    <script>
 
-    const form = document.getElementById('userForm');
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const formData={
-            firstName: document.getElementById('firstName').value,
+    <button class="button" onclick="window.location.href='/html/userlist'">Live Room</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Set the socket ID when the connection is established
+        socket.on('connect', () => {
+            document.getElementById('socketId').value = socket.id;
+        });
+
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const formData = {
+                firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
                 mobileNumber: document.getElementById('mobileNumber').value,
                 email: document.getElementById('email').value,
@@ -139,14 +151,16 @@
                     country: document.getElementById('country').value,
                 },
                 loginID: document.getElementById('loginId').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                socketId: document.getElementById('socketId').value
             };
+
             fetch('/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), 
+                body: JSON.stringify(formData),
             })
             .then(response => response.json())
             .then(data => {
@@ -157,25 +171,24 @@
             });
         });
 
-        document.getElementById('fetchUsers').addEventListener('click', function () {
-                fetch('/fetch') 
-                    .then(response => response.json())
-                    .then(data => {
-                        const userList = document.getElementById('userList');
-                        userList.innerHTML = ''; 
-                        data.forEach(user => {
-                            const userItem = document.createElement('div');
-                            const creationTime = new Date(user.creationTime).toLocaleString();
-                            const updatedTime = new Date(user.lastUpdatedOn).toLocaleString();
-                            userItem.innerText = `Name: ${user.firstName} ${user.lastName}, Email: ${user.email}  ,  MobileNumber: ${user.mobileNumber} , Email: ${user.email} , Address: ${user.address.street} ${user.address.city} ${user.address.state} ${user.address.country} , login Id:${user.loginID} , Creation time:${creationTime} , Last updated: ${updatedTime}`;
-                            userList.appendChild(userItem);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching users:', error);
-                    });
+        document.getElementById('fetchUsers').addEventListener('click', function() {
+            fetch('/fetch')
+            .then(response => response.json())
+            .then(data => {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = ''; 
+                data.forEach(user => {
+                    const userItem = document.createElement('li');
+                    const creationTime = new Date(user.creationTime).toLocaleString();
+                    const updatedTime = new Date(user.lastUpdatedOn).toLocaleString();
+                    userItem.innerText = `Name: ${user.firstName} ${user.lastName}, Email: ${user.email}  ,  MobileNumber: ${user.mobileNumber}  , Address: ${user.address.street} ${user.address.city} ${user.address.state} ${user.address.country} , login Id:${user.loginID} , Creation time:${creationTime} , Last updated: ${updatedTime}`;   
+                    userList.appendChild(userItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
             });
-
+        });
     </script>
 </div>
 </body>
