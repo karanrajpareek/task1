@@ -120,13 +120,14 @@
         <input type="hidden" id="socketId" name="socketId">
 
         <input type="submit" onclick="saveForm()" value="Save">
-    </form><br>
+    </form><br><br>
+    <button style="padding: 12px 24px" class="button" onclick="window.location.href='/html/userlist'">Live Room</button><br>
     <div class="fetch-users-section">
         <button id="fetchUsers">Fetch Users</button>
         <ul id="userList"></ul> <!-- Container to display fetched users as a list -->
     </div>
-
-    <button class="button" onclick="window.location.href='/html/userlist'">Live Room</button>
+    
+    
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
